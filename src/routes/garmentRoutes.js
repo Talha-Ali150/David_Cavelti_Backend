@@ -1,14 +1,18 @@
-import { createGarmentController, deleteGarmentController, getGarmentByIdController, getGarmentsController, updateGarmentController } from "../controllers/garmentController.js";
 import express from "express";
-import { authMiddleware, isAdmin } from "../middlewares/auth.js";
+import {
+  createGarment,
+  getGarments,
+  getGarmentById,
+  updateGarment,
+  deleteGarment,
+} from "../controllers/garmentController.js";
 
 const router = express.Router();
 
-router.get(`/`, getGarmentsController);
-router.get(`/:id`, getGarmentByIdController);
-
-router.post(`/`, authMiddleware, isAdmin, createGarmentController);
-router.put(`/:id`, authMiddleware, isAdmin, updateGarmentController);
-router.delete(`/:id`, authMiddleware, isAdmin, deleteGarmentController);
+router.post("/", createGarment);
+router.get("/", getGarments);
+router.get("/:id", getGarmentById);
+router.put("/:id", updateGarment);
+router.delete("/:id", deleteGarment);
 
 export default router;

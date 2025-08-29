@@ -1,51 +1,52 @@
-import { createGarmentService, deleteGarmentService, getGarmentByIdService, getGarmentsService, updateGarmentService } from "../services/garmentServices.js"
+import {
+  createGarmentService,
+  getGarmentsService,
+  getGarmentByIdService,
+  updateGarmentService,
+  deleteGarmentService,
+} from "../services/garmentService.js";
 
-export const createGarmentController = async (req, res, next) => {
+export const createGarment = async (req,res,next) => {
   try {
     const garment = await createGarmentService(req.body);
-    res.status(201).json(garment);
+    res.json(garment);
   } catch (err) {
     next(err);
   }
 };
 
-export const getGarmentsController = async (req, res, next) => {
+export const getGarments = async (req,res,next) => {
   try {
-    const garments = await getGarmentsService();
+    const { page = 1, limit = 10 } = req.query;
+    const garments = await getGarmentsService(Number(page), Number(limit));
     res.json(garments);
   } catch (err) {
     next(err);
   }
 };
 
-export const getGarmentByIdController = async (req, res, next) => {
-  const { id } = req.params;
+export const getGarmentById = async (req,res,next) => {
   try {
-    const garment = await getGarmentByIdService(id);
-    if (!garment) return res.status(404).json({ message: `Garment not found` });
+    const garment = await getGarmentByIdService(req.params.id);
     res.json(garment);
   } catch (err) {
     next(err);
   }
 };
 
-export const updateGarmentController = async (req, res, next) => {
-  const { id } = req.params;
+export const updateGarment = async (req,res,next) => {
   try {
-    const garment = await updateGarmentService(id, req.body);
-    if (!garment) return res.status(404).json({ message: `Garment not found` });
+    const garment = await updateGarmentService(req.params.id, req.body);
     res.json(garment);
   } catch (err) {
     next(err);
   }
 };
 
-export const deleteGarmentController = async (req, res, next) => {
-  const { id } = req.params;
+export const deleteGarment = async (req,res,next) => {
   try {
-    const garment = await deleteGarmentService(id);
-    if (!garment) return res.status(404).json({ message: `Garment not found` });
-    res.json({ message: `Garment deleted` });
+    await deleteGarmentService(req.params.id);
+    res.json({ message: "Garment deleted" });
   } catch (err) {
     next(err);
   }

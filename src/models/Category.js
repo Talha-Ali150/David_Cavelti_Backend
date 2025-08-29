@@ -1,13 +1,18 @@
 import mongoose from "mongoose";
 
 const categorySchema = new mongoose.Schema({
+  garment: { type: mongoose.Schema.Types.ObjectId, ref: "Garment", required: true },
   name: { type: String, required: true },
-  garment: {
-    type: mongoose.Schema.Types.ObjectId,
-    ref: "Garment",
-    required: true
-  }
-},
-  { timestamps: true });
+  layerOrder: { type: Number, required: true },
+}, { timestamps: true });
+
+categorySchema.virtual("options", {
+  ref: "Option",
+  localField: "_id",
+  foreignField: "category",
+});
+
+categorySchema.set("toObject", { virtuals: true });
+categorySchema.set("toJSON", { virtuals: true });
 
 export default mongoose.model("Category", categorySchema);

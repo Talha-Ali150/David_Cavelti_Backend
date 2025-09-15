@@ -7,6 +7,8 @@ import authRoutes from "./routes/authRoutes.js";
 // import optionRoutes from "./routes/optionRoutes.js";
 import adminGarmentRoutes from "./routes/adminGarmentRoutes.js";
 import adminCategoryRoutes from "./routes/adminCategoryRoutes.js";
+import adminOptionRoutes from "./routes/adminOptionRoutes.js";
+import clientRoutes from "./routes/clientRoutes.js";
 
 const app = express();
 
@@ -18,6 +20,8 @@ app.use(`/auth`, authRoutes);
 // app.use(`/options`, optionRoutes);
 app.use(`/garments`, adminGarmentRoutes)
 app.use(`/categories`, adminCategoryRoutes)
+app.use(`/options`, adminOptionRoutes)
+app.use(`/client`, clientRoutes)
 
 app.use(errorHandler);
 

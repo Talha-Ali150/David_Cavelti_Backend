@@ -1,14 +1,36 @@
 import Category from "../models/Category.js";
 
 export const createCategoryService = async (data) => {
-  const layerOrder = await getNextLayerOrder(data.garment);
-  const category = await Category.create({ ...data, layerOrder });
-  return category;
+  if (!data.layerOrder) {
+    const last = await Category.findOne({ garment: data.garment })
+      .sort("-layerOrder");
+    data.layerOrder = last ? last.layerOrder + 1 : 1;
+  }
+
+  const category = new Category(data);
+  return await category.save();
 };
 
 export const getCategoriesService = async (garmentId) => {
   const filter = garmentId ? { garment: garmentId } : {};
-  return await Category.find(filter);
+  return await Category.find(filter)
+    .populate("garment", "name")
+    .populate("options")
+    .sort("layerOrder")
+    .lean();
+};
+
+export const getCategoryByIdService = async (id) => {
+  return await Category.findById(id)
+    .populate("garment", "name")
+    .populate({
+      path: "options",
+      populate: {
+        path: "subOptions",
+        model: "Option",
+      },
+    })
+    .lean();
 };
 
 export const updateCategoryService = async (id, data) => {
@@ -17,12 +39,4 @@ export const updateCategoryService = async (id, data) => {
 
 export const deleteCategoryService = async (id) => {
   return await Category.findByIdAndDelete(id);
-};
-
-export const getNextLayerOrder = async (garmentId) => {
-  const lastCategory = await Category.find({ garment: garmentId })
-    .sort({ layerOrder: -1 })
-    .limit(1);
-
-  return lastCategory.length > 0 ? lastCategory[0].layerOrder + 1 : 1;
 };

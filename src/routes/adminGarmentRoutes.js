@@ -1,10 +1,18 @@
 import express from "express";
-import { createGarmentController, deleteGarmentController, getGarmentsController, updateGarmentController } from "../controllers/adminGarmentController.js";
+import {
+  createGarmentController,
+  getGarmentsController,
+  getGarmentByIdController,
+  updateGarmentController,
+  deleteGarmentController,
+} from "../controllers/adminGarmentController.js";
+import upload from "../middlewares/upload.js";
 
 const router = express.Router();
 
-router.post("/", createGarmentController);
+router.post("/", upload.single("image"), createGarmentController);
 router.get("/", getGarmentsController);
+router.get("/:id", getGarmentByIdController);
 router.put("/:id", updateGarmentController);
 router.delete("/:id", deleteGarmentController);
 

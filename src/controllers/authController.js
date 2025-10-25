@@ -1,13 +1,24 @@
-import { loginService, signupService } from "../services/authServices.js"
+import { forgotPasswordService, loginService, sendOtpService, verifyForgotOtpAndResetService, verifyOtpAndSignupService } from "../services/authServices.js"
 
-export const signUp = async (req, res, next) => {
+export const sendOtpController = async (req, res, next) => {
   try {
-    const data = await signupService(req.body);
-    res.json({ message: `User registered successfully`, user: data });
+    const { email } = req.body;
+    const result = await sendOtpService(email);
+    res.json({ success: true, ...result });
   } catch (err) {
     next(err);
   }
 };
+
+export const verifyOtpAndSignupController = async (req, res, next) => {
+  try {
+    const result = await verifyOtpAndSignupService(req.body);
+    res.status(201).json({ success: true, data: result });
+  } catch (err) {
+    next(err);
+  }
+};
+
 
 export const login = async (req, res, next) => {
   try {
@@ -17,3 +28,22 @@ export const login = async (req, res, next) => {
     next(err);
   }
 }
+
+export const forgotPasswordController = async (req, res, next) => {
+  try {
+    const { email } = req.body;
+    const result = await forgotPasswordService(email);
+    res.json({ success: true, ...result });
+  } catch (err) {
+    next(err);
+  }
+};
+
+export const verifyForgotOtpAndResetController = async (req, res, next) => {
+  try {
+    const result = await verifyForgotOtpAndResetService(req.body);
+    res.json({ success: true, ...result });
+  } catch (err) {
+    next(err);
+  }
+};
